@@ -2,36 +2,70 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <link href="src/materialize.css" rel="stylesheet" type="text/css" />
     <link href="src/styles.css" rel="stylesheet" type="text/css" />
-
     <script>
       function startGame() {
         document.turn = "x";
         document.winner = null;
+        document.rCounter = 0;
+        setTimer(10 + " s");
+        let myProgress = document.querySelector(".progress");
+        document.timer = setInterval(function () {
+          var dTimer = document.getElementById("pBar");
+          dTimer.value = 10 - ++document.rCounter;
+          myProgress.style.width = dTimer.value * 10 + "%";
+          setTimer(dTimer.value + " s");
+          if (dTimer.value <= 0) {
+            clearInterval(document.timer);
+            switchTurn(document.rCounter);
+          }
+        }, 1000);
+
         setTurn(document.turn + " starts the game");
       }
       function setTurn(trn) {
         document.getElementById("turn").innerText = trn;
       }
+      function setTimer(tm) {
+        document.getElementById("timer").innerText = tm;
+      }
       function nextMove(square) {
         if (document.winner != null) {
           setTurn("Player " + document.winner + " already won the game.");
-        } else if (square.innerText == "") {
-          square.innerText = document.turn;
-          switchTurn();
+        }
+        if (square.innerText == "") {
+          if (document.turn == "x") {
+            square.innerText = "x";
+            square.style.backgroundColor =
+              "rgb(" + 124 + "," + 252 + "," + 0 + ")";
+            switchTurn();
+          } else if (document.turn == "o") {
+            square.innerText = "o";
+            square.style.backgroundColor =
+              "rgb(" + 250 + "," + 128 + "," + 114 + ")";
+            switchTurn();
+          }
+        } else {
+          setTurn("Select an empty square for your move!");
         }
       }
       function switchTurn() {
         if (checkForWinner(document.turn)) {
           alert("Player " + document.winner + " won!");
-        } else if (document.turn == "x") {
-          document.turn = "o";
-          setTurn("It's " + document.turn + "'s turn!");
         } else {
-          document.turn = "x";
-          setTurn("It's " + document.turn + "'s turn!");
+          if (document.turn == "x") {
+            document.turn = "o";
+            setTurn("It's o's turn!");
+            resetTimer(document.rCounter);
+          } else {
+            document.turn = "x";
+            setTurn("It's x's turn!");
+            resetTimer(document.rCounter);
+          }
         }
       }
+
       function checkRow(a, b, c, d, e, move) {
         var result = false;
         if (
@@ -54,7 +88,7 @@
         if (
           checkRow(1, 2, 3, 4, 5, move) ||
           checkRow(6, 7, 8, 9, 10, move) ||
-          checkRow(11, 12, 13, 44, 15, move) ||
+          checkRow(11, 12, 13, 14, 15, move) ||
           checkRow(16, 17, 18, 19, 20, move) ||
           checkRow(21, 22, 23, 24, 25, move) ||
           checkRow(1, 6, 11, 16, 21, move) ||
@@ -66,57 +100,90 @@
           checkRow(21, 17, 13, 9, 5, move)
         ) {
           if (move == "x") {
-            document.winner = "1";
+            document.winner = 1;
           } else {
-            document.winner = "2";
+            document.winner = 2;
           }
           result = true;
         }
         return result;
       }
+      function resetTimer(rC) {
+        if (rC == 10) {
+          document.rCounter = 0;
+          var dTimer = document.getElementById("pBar");
+          dTimer.value = 10 - ++document.rCounter;
+          setTimer(dTimer.value + " s");
+          let myProgress = document.querySelector(".progress");
+          myProgress.style.width = dTimer.value * 10 + "%";
+          document.timer = setInterval(function () {
+            dTimer.value = 10 - ++document.rCounter;
+            setTimer(dTimer.value + " s");
+            myProgress.style.width = dTimer.value * 10 + "%";
+            if (dTimer.value <= 0) {
+              clearInterval(document.timer);
+              switchTurn(document.rCounter);
+            }
+          }, 1000);
+          return;
+        }
+        document.rCounter = -1;
+        var dTimer = document.getElementById("pBar");
+        dTimer.value = 10 - ++document.rCounter;
+        setTimer(dTimer.value + " s");
+        turn.setAttribute("time", rC);
+        let myProgress = document.querySelector(".progress");
+        myProgress.style.width = dTimer.value * 10 + "%";
+      }
     </script>
   </head>
-
   <body onload="startGame();">
-    <h1 class="turn">Tic-Tac-Toe</h1>
-    <div class="turn" id="turn"></div>
+    <div class="container">
+      <h1 class="title">Tic-Tac-Toe</h1>
+      <div class="turn" id="turn"></div>
+      <div class="progress">
+        <div class="determinate" id="pBar" style="width: 100%;"></div>
+      </div>
+      <div class="turn" id="timer"></div>
+    </div>
     <br />
-    <table id="board" border="1">
-      <tr>
-        <td id="s1" class="Square" onclick="nextMove(this)"></td>
-        <td id="s2" class="Square" onclick="nextMove(this)"></td>
-        <td id="s3" class="Square" onclick="nextMove(this)"></td>
-        <td id="s4" class="Square" onclick="nextMove(this)"></td>
-        <td id="s5" class="Square" onclick="nextMove(this)"></td>
-      </tr>
-      <tr>
-        <td id="s6" class="Square" onclick="nextMove(this)"></td>
-        <td id="s7" class="Square" onclick="nextMove(this)"></td>
-        <td id="s8" class="Square" onclick="nextMove(this)"></td>
-        <td id="s9" class="Square" onclick="nextMove(this)"></td>
-        <td id="s10" class="Square" onclick="nextMove(this)"></td>
-      </tr>
-      <tr>
-        <td id="s11" class="Square" onclick="nextMove(this)"></td>
-        <td id="s12" class="Square" onclick="nextMove(this)"></td>
-        <td id="s13" class="Square" onclick="nextMove(this)"></td>
-        <td id="s14" class="Square" onclick="nextMove(this)"></td>
-        <td id="s15" class="Square" onclick="nextMove(this)"></td>
-      </tr>
-      <tr>
-        <td id="s16" class="Square" onclick="nextMove(this)"></td>
-        <td id="s17" class="Square" onclick="nextMove(this)"></td>
-        <td id="s18" class="Square" onclick="nextMove(this)"></td>
-        <td id="s19" class="Square" onclick="nextMove(this)"></td>
-        <td id="s20" class="Square" onclick="nextMove(this)"></td>
-      </tr>
-      <tr>
-        <td id="s21" class="Square" onclick="nextMove(this)"></td>
-        <td id="s22" class="Square" onclick="nextMove(this)"></td>
-        <td id="s23" class="Square" onclick="nextMove(this)"></td>
-        <td id="s24" class="Square" onclick="nextMove(this)"></td>
-        <td id="s25" class="Square" onclick="nextMove(this)"></td>
-      </tr>
-    </table>
+    <div class="container">
+      <div class="row">
+        <div id="s1" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s2" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s3" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s4" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s5" class="col s1" onclick="nextMove(this)"></div>
+      </div>
+      <div class="row">
+        <div id="s6" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s7" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s8" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s9" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s10" class="col s1" onclick="nextMove(this)"></div>
+      </div>
+      <div class="row">
+        <div id="s11" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s12" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s13" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s14" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s15" class="col s1" onclick="nextMove(this)"></div>
+      </div>
+      <div class="row">
+        <div id="s16" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s17" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s18" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s19" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s20" class="col s1" onclick="nextMove(this)"></div>
+      </div>
+      <div class="row">
+        <div id="s21" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s22" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s23" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s24" class="col s1" onclick="nextMove(this)"></div>
+        <div id="s25" class="col s1" onclick="nextMove(this)"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="js/materialize.js"></script>
   </body>
 </html>

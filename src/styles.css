@@ -1,14 +1,28 @@
-.Square {
-  width: 25px;
-  height: 25px;
+.row > div {
+  border: 1px solid black;
+  font-family: Helvetica;
+  font-size: 30px;
   text-align: center;
-  font-size: 18pt;
+  vertical-align: middle;
+  height: 60px;
+  width: 60px;
+  margin: 0px;
+}
+
+.row {
+  margin: 0px;
+}
+
+.title {
+  font-family: Helvetica;
   font-weight: bold;
-  font-family: Verdana;
+  font-size: 22;
+  text-align: left;
 }
 
 .turn {
-  font-family: Verdana;
+  font-family: Helvetica;
   font-weight: bold;
   font-size: 22;
+  text-align: left;
 }
